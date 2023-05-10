@@ -1,0 +1,1 @@
+python delete_directory.py

@@ -1,0 +1,63 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+    ndkVersion "16.1.4479499"
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+    defaultConfig {
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+                abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'mips', 'mips64', 'x86', 'x86_64'
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled true
+        }
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
+
+}
+
+dependencies {
+    compileOnly 'androidx.annotation:annotation:1.0.0'
+}
+
+apply plugin: "maven-publish"
+group("com.github.Android-Mainli")
+version("1.0.1")
+publishing {
+    publications {
+        release(MavenPublication) {
+            afterEvaluate {
+                from components.release
+            }
+        }
+    }
+    repositories {
+        maven {
+            url "${rootProject.rootDir}/maven-local"
+        }
+    }
+}
